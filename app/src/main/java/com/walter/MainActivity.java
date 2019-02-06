@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.walter.repository.UsersRepository;
+
 public class MainActivity extends AppCompatActivity {
     EditText inputNames, inputAge;
     TextView txtRecords;
@@ -34,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 save();
             }
         });
-
         MyDatabase.getInstatnce(this).getUserDao().getCount()
                 .observe(this, new Observer<Integer>() {
             @Override
@@ -43,31 +44,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        UsersRepository usersRepository=new UsersRepository();
+        usersRepository.makeFrequentCalls();
     }
 
     private void save() {
        String names= inputNames.getText().toString().trim();
        String age_string = inputAge.getText().toString().trim();
-
        if (names.isEmpty() || age_string.isEmpty()){
            Toast.makeText(this, "Fill All Values", Toast.LENGTH_SHORT).show();
            return;
        }
-
        int age = Integer.parseInt(age_string);
-
        User x = new User();
        x.setName(names);
        x.setAge(age);
        MyDatabase.getInstatnce(this).getUserDao().insertUser(x);
-
-       //int count = MyDatabase.getInstatnce(this).getUserDao().getCount();
-
-       //txtRecords.setText(count+"");
-
        inputNames.setText("");
        inputAge.setText("");
-       //justpaste.it/3vdyj
+       inputNames.requestFocus();
     }
 }
